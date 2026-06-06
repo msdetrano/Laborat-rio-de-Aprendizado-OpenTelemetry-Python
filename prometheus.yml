@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 5s # Frequência rápida de raspagem para testes locais imediatos
+  evaluation_interval: 5s
+
+scrape_configs:
+  # Scraping das métricas geradas pelo próprio Prometheus
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Scraping das métricas exportadas pelo OTel Collector (nosso app manda pro collector, collector expõe no port 8889)
+  - job_name: 'otel-collector-metrics'
+    static_configs:
+      - targets: ['otel-collector:8889']
+
+  # Scraping de métricas internas de performance do próprio OTel Collector
+  - job_name: 'otel-collector-internal'
+    static_configs:
+      - targets: ['otel-collector:8888']

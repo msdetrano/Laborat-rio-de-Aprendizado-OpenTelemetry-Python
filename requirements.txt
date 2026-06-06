@@ -1,0 +1,13 @@
+# Web Framework
+fastapi>=0.110.0
+uvicorn>=0.28.0
+
+# OpenTelemetry Core API e SDK
+opentelemetry-api>=1.23.0
+opentelemetry-sdk>=1.23.0
+
+# Instrumentação Automática para FastAPI
+opentelemetry-instrumentation-fastapi>=0.44b0
+
+# Exporter para enviar dados (OTLP gRPC) ao Coletor
+opentelemetry-exporter-otlp>=1.23.0

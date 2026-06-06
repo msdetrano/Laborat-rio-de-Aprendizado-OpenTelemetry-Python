@@ -1,0 +1,36 @@
+services:
+  # OpenTelemetry Collector
+  # Recebe telemetria do aplicativo via OTLP (gRPC/HTTP), processa e distribui para Jaeger e Prometheus.
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.95.0
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "1888:1888"   # pprof extension
+      - "8888:8888"   # Prometheus metrics exposed by the collector itself
+      - "8889:8889"   # Prometheus exporter metrics
+      - "13133:13133" # health_check extension
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+      - "55679:55679" # zpages extension
+    depends_on:
+      - jaeger
+      - prometheus
+
+  # Jaeger - Distributed Tracing Backend
+  # Recebe traces do coletor e disponibiliza uma interface web para consulta.
+  jaeger:
+    image: jaegertracing/all-in-one:1.55
+    ports:
+      - "16686:16686" # Web UI
+      - "14268:14268" # jaeger.collector HTTP port
+
+  # Prometheus - Metrics Backend
+  # Banco de dados temporal (time-series) que busca métricas do coletor de tempos em tempos.
+  prometheus:
+    image: prom/prometheus:v2.50.1
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"   # Web UI
