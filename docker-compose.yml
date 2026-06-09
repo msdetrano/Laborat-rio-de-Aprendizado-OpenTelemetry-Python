@@ -34,3 +34,18 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"   # Web UI
+
+  # ---- CÓDIGO DA SUA APLICAÇÃO PYTHON ----
+  meu-app:
+    build:
+      context: .          # Mudamos o contexto direto para a pasta do app
+      dockerfile: app/Dockerfile   # O Dockerfile está diretamente dentro do contexto agora
+    container_name: minha_aplicacao_python
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+    depends_on:
+      - otel-collector
